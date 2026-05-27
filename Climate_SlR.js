@@ -1,6 +1,5 @@
 // ==========================================================
 // LAGOS RELATIVE SEA-LEVEL-RISE CLIMATE RISK MODEL
-// FIXED VERSION
 // ==========================================================
 
 
@@ -57,7 +56,7 @@ var distanceToWater = waterMask.not()
 
 
 // ----------------------------------------------------------
-// 5. BUILT-UP AREAS (FIXED)
+// 5. BUILT-UP AREAS
 // ----------------------------------------------------------
 
 // IMPORTANT:
@@ -230,7 +229,7 @@ Map.addLayer(
 
 
 // ----------------------------------------------------------
-// 14. RISK AREA STATISTICS (FIXED)
+// 14. RISK AREA STATISTICS
 // ----------------------------------------------------------
 
 var areaImage = ee.Image.pixelArea()
@@ -253,7 +252,7 @@ print('Risk Area Statistics', stats);
 
 
 // ----------------------------------------------------------
-// 15. POPULATION AT RISK (FIXED)
+// 15. POPULATION AT RISK
 // ----------------------------------------------------------
 
 var highRiskMask = riskClass.gte(3);
