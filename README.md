@@ -1,17 +1,15 @@
+# Integrating Relative Sea Level Rise into Fiscal Risk Assessment and Adaptation Investment Planning in Lagos, Nigeria: A Geospatial-Economic Approach
+
 # Sea Level Rise with Subsidence Flood Inundation Modelling
 This is a bathtub inundation model. It assumes every low-lying area below the water level floods. That is useful for first-level screening, but it can overestimate flooding because it ignores drainage, barriers, canals, flow connectivity, tide timing, and coastal defenses.
 
-    Bash
-    pip install rasterio geopandas shapely pandas numpy
-
-
-# Lagos Relative Sea-Level Rise Climate Risk Model (Technical Documentation)
+```Bash
+pip install rasterio geopandas shapely pandas numpy
+```
 
 ## 1. Overview
 
 This script implements a **spatial climate risk assessment model for Lagos, Nigeria** using Google Earth Engine (GEE). The model integrates elevation, water occurrence, built-up extent, population density, and subsidence data to generate a **composite Climate Risk Index (0–1)** and a categorical risk classification (1–4). It also estimates flood exposure, population at risk, and exports geospatial outputs for further analysis.
-
----
 
 ## 2. Study Area Definition
 
@@ -29,7 +27,6 @@ Map.centerObject(lagos, 9);
 
 The map is centered on Lagos at zoom level 9 for visualization.
 
----
 
 ## 3. Digital Elevation Model (DEM)
 
@@ -40,15 +37,12 @@ var dem = ee.Image('NASA/NASADEM_HGT/001')
   .select('elevation')
   .clip(lagos);
 ```
-
 Visualization parameters:
 
 * Minimum elevation: 0 m
 * Maximum elevation: 20 m
 
 The DEM serves as a primary exposure factor in flood and sea-level rise modelling.
-
----
 
 ## 4. Surface Water Occurrence and Water Mask
 
@@ -81,8 +75,6 @@ var distanceToWater = waterMask.not()
 
 This generates a continuous raster representing distance (in meters) to nearest water body.
 
----
-
 ## 6. Built-Up Areas
 
 Built-up intensity is derived from the Global Human Settlement Layer (GHSL P2023A).
@@ -103,8 +95,6 @@ var builtMask = builtup.gt(0)
   * 1 = built-up area
   * 0 = non-built-up area
 
----
-
 ## 7. Population Density
 
 Population data is sourced from WorldPop (2020 annual dataset).
@@ -121,7 +111,6 @@ var population = ee.ImageCollection('WorldPop/GP/100m/pop')
 * Represents population per 100m grid cell.
 * Used as a socio-economic exposure variable.
 
----
 
 ## 8. Land Subsidence
 
@@ -136,7 +125,6 @@ var subsidence = ee.Image.constant(4)
 * Value: 4 mm/year
 * Represents vertical land movement contributing to relative sea-level rise.
 
----
 
 ## 9. Sea-Level Rise Scenario
 
@@ -149,8 +137,6 @@ var oceanSLR_med = 3.6;
 
 * Time horizon: 30 years (2020–2050)
 * Sea-level rise rate: 3.6 mm/year (ocean component)
-
----
 
 ## 10. Relative Sea-Level Rise (RSLR)
 
@@ -168,8 +154,6 @@ var rslr = relativeRate
 
 This produces cumulative relative sea-level rise in meters.
 
----
-
 ## 11. Flood Exposure Mapping
 
 Flood exposure is derived by comparing elevation with projected relative sea-level rise.
@@ -183,8 +167,6 @@ var floodExposure = dem.lte(rslr)
 * Pixels where elevation ≤ RSLR are classified as exposed.
 * Output represents potential inundation zones.
 
----
-
 ## 12. Normalized Risk Factors
 
 All risk variables are normalized to a 0–1 scale.
@@ -197,10 +179,7 @@ var elevationRisk = dem.expression(
     elev: dem
 });
 ```
-
 Lower elevation corresponds to higher risk.
-
----
 
 ### 12.2 Subsidence Risk
 
@@ -223,10 +202,7 @@ var waterRisk = distanceToWater.expression(
     dist: distanceToWater
 });
 ```
-
 Closer proximity to water increases risk.
-
----
 
 ### 12.4 Population Risk
 
@@ -236,10 +212,7 @@ var popRisk = population.expression(
     pop: population
 });
 ```
-
 Higher population density increases exposure.
-
----
 
 ## 13. Climate Risk Index
 
@@ -263,8 +236,6 @@ var climateRisk = elevationRisk.multiply(0.30)
 
 The output is a normalized raster (0 = low risk, 1 = high risk).
 
----
-
 ## 14. Risk Classification
 
 The continuous risk index is reclassified into four ordinal categories.
@@ -285,8 +256,6 @@ var riskClass = climateRisk.expression(
 * 2 = Moderate risk
 * 3 = High risk
 * 4 = Very high risk
-
----
 
 ## 15. Risk Area Statistics
 
@@ -314,10 +283,7 @@ var highRiskMask = riskClass.gte(3);
 var populationAtRisk = population
   .updateMask(highRiskMask);
 ```
-
 Population values are aggregated over high-risk zones.
-
----
 
 ## 17. Data Export
 
@@ -349,8 +315,6 @@ Export.image.toDrive({
   description: 'Lagos_Flood_Exposure'
 });
 ```
-
----
 
 ## 18. Summary
 
