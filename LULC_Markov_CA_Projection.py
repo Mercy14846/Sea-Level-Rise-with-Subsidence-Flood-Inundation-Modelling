@@ -18,9 +18,6 @@ TARGET_YEARS = {
 CA_STEP_YEARS = 5
 
 
-# ---------------------------------------------------------------
-# 1. LOAD RASTERS
-# ---------------------------------------------------------------
 def load_raster(path):
     with rasterio.open(path) as src:
         arr = src.read(1)
@@ -35,9 +32,7 @@ def save_raster(arr, profile, out_path):
     print(f"Saved: {out_path}")
 
 
-# ---------------------------------------------------------------
-# 2. MARKOV TRANSITION MATRIX (from two historical maps)
-# ---------------------------------------------------------------
+
 def build_transition_matrix(from_arr, to_arr, classes=CLASSES):
     """Cross-tabulate pixels: rows = class at time1, cols = class at time2."""
     n = len(classes)
@@ -85,9 +80,6 @@ def project_class_proportions(current_counts, annual_matrix, n_years):
     return projected  # proportions summing to 1, one per class
 
 
-# ---------------------------------------------------------------
-# 3. CELLULAR AUTOMATA — SPATIAL ALLOCATION
-# ---------------------------------------------------------------
 def neighborhood_density(arr, target_class, size=5):
     """Fraction of neighboring pixels (size x size window) equal to target_class."""
     def frac(window):
