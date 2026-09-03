@@ -159,9 +159,7 @@ def run_ca_markov(base_arr, annual_matrix, base_year, target_year, step_years=CA
     return arr
 
 
-# ---------------------------------------------------------------
-# 4. MAIN WORKFLOW
-# ---------------------------------------------------------------
+
 def main():
     # --- Load historical classified rasters (from GEE exports) ---
     arr_2006, _ = load_raster('LULC_2006.tif')
