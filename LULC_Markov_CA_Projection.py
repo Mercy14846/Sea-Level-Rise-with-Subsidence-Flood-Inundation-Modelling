@@ -1,36 +1,3 @@
-"""
-LULC PROJECTION — 2030, 2050, 2100 (CA-Markov)
-================================================
-Input : classified GeoTIFFs from GEE (LULC_1986.tif, LULC_2006.tif, LULC_2025.tif)
-        Pixel values: 1=Built-up, 2=Vegetation, 3=Wetland, 4=Water, 5=Bareland
-Output: LULC_2030.tif, LULC_2050.tif, LULC_2100.tif
-
-METHOD
-------
-1. Markov chain: derive a transition probability matrix from two historical
-   LULC maps (2006 -> 2025), convert it to an ANNUAL transition matrix
-   (fractional matrix power), then raise it to the power of N years to
-   project class PROPORTIONS for any future year.
-2. Cellular Automata (CA): allocate that projected proportion of change
-   SPATIALLY, using a neighborhood-suitability filter — pixels are more
-   likely to convert to a class that already dominates their neighborhood
-   (mimics urban growth / vegetation loss spreading from existing patches).
-   This is the same core logic used by TerrSet Land Change Modeler and the
-   QGIS MOLUSCE plugin.
-
-REQUIREMENTS
-------------
-pip install rasterio numpy scipy
-
-NOTE ON REALISM
-----------------
-A production-grade CA-Markov also weights suitability by distance-to-road,
-slope, distance-to-existing-built-up, protected-area masks, etc. This
-script implements the core neighborhood-density CA, which is a valid and
-commonly published baseline. Add extra suitability layers by editing
-`compute_suitability()` if you have road/slope data.
-"""
-
 import numpy as np
 import rasterio
 from scipy.ndimage import generic_filter
